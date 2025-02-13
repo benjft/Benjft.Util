@@ -118,6 +118,7 @@ public static class ServiceCollectionExtensions {
             
             return type.GetFactoryServiceDescriptor(methodInfo, (attribute as ImplementsServiceAttribute)?.ServiceType, attribute.ServiceKey, lifetime);
         }
+        ValidateServiceNotAbstract(type);
         
         var serviceType = (attribute as ImplementsServiceAttribute)?.ServiceType ?? type;
         ValidateServiceType(type, serviceType);
@@ -134,6 +135,12 @@ public static class ServiceCollectionExtensions {
     private static void ValidateServiceType(Type type, Type serviceType) {
         if (!type.IsAssignableTo(serviceType)) {
             throw new InvalidServiceTypeException($"Type {type.Name} must be assignable to Service Type {serviceType.Name}.");
+        }
+    }
+
+    private static void ValidateServiceNotAbstract(Type type) {
+        if (type.IsAbstract) {
+            throw new InvalidServiceTypeException($"Implementation type {type.Name} must not be an abstract class.");
         }
     }
 
