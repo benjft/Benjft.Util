@@ -58,6 +58,9 @@ public class ServiceAttributeTests {
     [InlineData(typeof(ServiceAttributeExample_FactoryMethodNotStatic),
                 typeof(InvalidFactoryMethodException),
                 typeof(FactoryMethodNotStaticException))]
+    [InlineData(typeof(ServiceAttributeExample_KeyedFactoryMethodHasWrongSignature),
+                typeof(InvalidFactoryMethodException),
+                typeof(FactoryMethodHasWrongSignatureException))]
     public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType, Type exceptionType, Type? innerExceptionType) {
         var actualException = Assert.Throws(exceptionType, () => serviceType.GetServicesFromAttributes().ToList());
         
@@ -66,10 +69,10 @@ public class ServiceAttributeTests {
         }
     }
 
-    [Fact]
-    public void ServiceAttribute_ShouldUseKeyedServices_WhenKeysAreProvided() {
-        var serviceType = typeof(ServiceAttributeExample_Keyed);
-        
+    [Theory]
+    [InlineData(typeof(ServiceAttributeExample_Keyed))]
+    [InlineData(typeof(ServiceAttributeExample_KeyedFactoryMethod))]
+    public void ServiceAttribute_ShouldUseKeyedServices_WhenKeysAreProvided(Type serviceType) {        
         var services = serviceType.GetServicesFromAttributes().ToArray();
         
         Assert.Equal(2, services.Length);

@@ -46,6 +46,20 @@ public class ServiceAttributeExample_Keyed;
 [Service(ServiceKey = "Key2", Order = 1)]
 public class ServiceAttributeExample_KeyedOrdered;
 
+[Service(FactoryMethod = nameof(Create), ServiceKey = "Key1")]
+[Service(FactoryMethod = nameof(Create), ServiceKey = "Key2")]
+public class ServiceAttributeExample_KeyedFactoryMethod {
+    [ExcludeFromCodeCoverage]
+    public static ServiceAttributeExample_KeyedFactoryMethod Create(IServiceProvider _, object? key) => new();
+}
+
+[Service(FactoryMethod = nameof(Create), ServiceKey = "Key1")]
+[Service(FactoryMethod = nameof(Create), ServiceKey = "Key2")]
+public class ServiceAttributeExample_KeyedFactoryMethodHasWrongSignature {
+    [ExcludeFromCodeCoverage]
+    public static ServiceAttributeExample_KeyedFactoryMethodHasWrongSignature Create(IServiceProvider _) => new();
+}
+
 [SingletonService]
 public class SingletonServiceAttributeExample;
 
