@@ -29,6 +29,12 @@ public class ServiceAttributeExample_FactoryMethodHasWrongSignature {
     public static ServiceAttributeExample_FactoryMethodHasWrongSignature Create(string _) => new();
 }
 
+[Service(FactoryMethod = nameof(Create))]
+public class ServiceAttributeExample_FactoryMethodHasWrongServiceType {
+    [ExcludeFromCodeCoverage]
+    public static ServiceAttributeExample_FactoryMethod Create(string _) => new();
+}
+
 [Service(FactoryMethod = "Create")]
 public class ServiceAttributeExample_FactoryMethodMissing;
 

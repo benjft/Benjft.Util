@@ -61,6 +61,9 @@ public class ServiceAttributeTests {
     [InlineData(typeof(ServiceAttributeExample_KeyedFactoryMethodHasWrongSignature),
                 typeof(InvalidFactoryMethodException),
                 typeof(FactoryMethodHasWrongSignatureException))]
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodHasWrongServiceType),
+                typeof(InvalidServiceTypeException),
+                null)]
     public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType, Type exceptionType, Type? innerExceptionType) {
         var actualException = Assert.Throws(exceptionType, () => serviceType.GetServicesFromAttributes().ToList());
         
