@@ -8,7 +8,7 @@ public class ServiceAttribute() : Attribute() {
         Lifetime = lifetime;
     }
     
-    public ServiceLifetime? Lifetime { get; init; } = null;
+    public ServiceLifetime? Lifetime { get; } = null;
 
     public string? FactoryMethod { get; init; }
     public object? ServiceKey { get; init; }

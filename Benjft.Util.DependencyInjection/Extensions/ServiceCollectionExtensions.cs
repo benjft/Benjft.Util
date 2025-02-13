@@ -24,9 +24,9 @@ public static class ServiceCollectionExtensions {
         this IServiceCollection services,
         IEnumerable<Assembly> assemblies,
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient) {
-        
+
         var serviceDescriptors = from assembly in assemblies
-                                 from type in assembly.GetTypes() 
+                                 from type in assembly.GetTypes()
                                  from serviceDescriptorWrapper in type.GetServiceDescriptors(defaultLifetime)
                                  orderby serviceDescriptorWrapper
                                  select serviceDescriptorWrapper.ServiceDescriptor;
@@ -38,19 +38,12 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    public static IServiceCollection AddServicesFromAttributes(
-        this IServiceCollection services,
-        Type type,
+    public static IEnumerable<ServiceDescriptor> GetServicesFromAttributes(
+        this Type type,
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient) {
-        var serviceDescriptors = from serviceDescriptorWrapper in type.GetServiceDescriptors(defaultLifetime)
-                                 orderby serviceDescriptorWrapper
-                                 select serviceDescriptorWrapper.ServiceDescriptor;
-
-        foreach (var serviceDescriptor in serviceDescriptors) {
-            services.Add(serviceDescriptor);
-        }
-        
-        return services;
+        return from serviceDescriptorWrapper in type.GetServiceDescriptors(defaultLifetime)
+               orderby serviceDescriptorWrapper
+               select serviceDescriptorWrapper.ServiceDescriptor;
     }
     
     private static IEnumerable<ServiceDescriptorWrapper> GetServiceDescriptors(this Type type, ServiceLifetime defaultLifetime) {
