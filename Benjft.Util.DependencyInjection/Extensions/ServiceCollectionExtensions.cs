@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Benjft.Util.DependencyInjection.Attributes;
+using Benjft.Util.DependencyInjection.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Benjft.Util.DependencyInjection.Extensions;
@@ -74,8 +75,8 @@ public static class ServiceCollectionExtensions {
             ValidateServiceType(type, serviceType);
 
             return CreateFactoryServiceDescriptor(method, serviceKey, lifetime, serviceType);
-        } catch (ArgumentException e) {
-            throw new ArgumentException($"Factory Method {type.Name}::{method.Name} is not a valid factory method.", nameof(method), e);
+        } catch (InvalidFactoryMethodException e) {
+            throw new InvalidFactoryMethodException($"Factory Method {type.Name}::{method.Name} is not a valid factory method.", e);
         }
     }
 
@@ -89,7 +90,7 @@ public static class ServiceCollectionExtensions {
                 var invoker = method.CreateDelegate<Func<IServiceProvider, object?, object>>();
                 return ServiceDescriptor.DescribeKeyed(serviceType, serviceKey, invoker, lifetime);
             } catch (ArgumentException e) {
-                throw new ArgumentException("Keyed Factory Method must be assignable to Func<IServiceProvider, object?, object>.", nameof(method), e);
+                throw new FactoryMethodHasWrongSignatureException("Keyed Factory Method must be assignable to Func<IServiceProvider, object?, object>.", e);
             }
         }
 
@@ -97,7 +98,7 @@ public static class ServiceCollectionExtensions {
             var invoker = method.CreateDelegate<Func<IServiceProvider, object>>();
             return ServiceDescriptor.Describe(serviceType, invoker, lifetime);
         } catch (ArgumentException e) {
-            throw new ArgumentException("Factory Method must be assignable to Func<IServiceProvider, object>.", nameof(method), e);
+            throw new FactoryMethodHasWrongSignatureException("Factory Method must be assignable to Func<IServiceProvider, object>.", e);
         }
     }
 
@@ -112,7 +113,7 @@ public static class ServiceCollectionExtensions {
         var lifetime = attribute.Lifetime ?? defaultLifetime;
 
         if (attribute.FactoryMethod != null) {
-            var methodInfo = type.GetMethod(attribute.FactoryMethod, BindingFlags.Public | BindingFlags.Static);
+            var methodInfo = type.GetMethod(attribute.FactoryMethod);
             ValidateFactoryMethodExists(type, attribute, methodInfo);
             
             return type.GetFactoryServiceDescriptor(methodInfo, (attribute as ImplementsServiceAttribute)?.ServiceType, attribute.ServiceKey, lifetime);
@@ -126,19 +127,19 @@ public static class ServiceCollectionExtensions {
 
     private static void ValidateFactoryMethodExists(Type type, ServiceAttribute attribute, [NotNull]MethodInfo? methodInfo) {
         if (methodInfo == null) {
-            throw new ArgumentException($"Type {type.Name} does not contain a public static method named {attribute.FactoryMethod}.", nameof(attribute));
+            throw new FactoryMethodNotFoundException($"Type {type.Name} does not contain a public static method named {attribute.FactoryMethod}.");
         }
     }
 
     private static void ValidateServiceType(Type type, Type serviceType) {
         if (!type.IsAssignableTo(serviceType)) {
-            throw new ArgumentException($"Type {type.Name} must be assignable to Service Type {serviceType.Name}.", nameof(type));
+            throw new InvalidServiceTypeException($"Type {type.Name} must be assignable to Service Type {serviceType.Name}.");
         }
     }
 
     private static void ValidateFactoryMethodIsStatic(MethodInfo method) {
         if (!method.IsStatic) {
-            throw new ArgumentException("Factory Method must be static", nameof(method));
+            throw new FactoryMethodNotStaticException("Factory Method must be static");
         }
     }
 }

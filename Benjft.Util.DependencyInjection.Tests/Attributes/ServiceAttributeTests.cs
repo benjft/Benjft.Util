@@ -1,4 +1,5 @@
-﻿using Benjft.Util.DependencyInjection.Extensions;
+﻿using Benjft.Util.DependencyInjection.Exceptions;
+using Benjft.Util.DependencyInjection.Extensions;
 using Benjft.Util.DependencyInjection.Tests.Attributes.Examples;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -48,11 +49,21 @@ public class ServiceAttributeTests {
     }
 
     [Theory]
-    [InlineData(typeof(ServiceAttributeExample_FactoryMethodHasWrongSignature))]
-    [InlineData(typeof(ServiceAttributeExample_FactoryMethodMissing))]
-    [InlineData(typeof(ServiceAttributeExample_FactoryMethodNotStatic))]
-    public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType) {
-        Assert.Throws<ArgumentException>(() => serviceType.GetServicesFromAttributes().ToList());
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodHasWrongSignature),
+                typeof(InvalidFactoryMethodException),
+                typeof(FactoryMethodHasWrongSignatureException))]
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodMissing),
+                typeof(FactoryMethodNotFoundException),
+                null)]
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodNotStatic),
+                typeof(InvalidFactoryMethodException),
+                typeof(FactoryMethodNotStaticException))]
+    public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType, Type exceptionType, Type? innerExceptionType) {
+        var actualException = Assert.Throws(exceptionType, () => serviceType.GetServicesFromAttributes().ToList());
+        
+        if (innerExceptionType != null) {
+            Assert.IsType(innerExceptionType, actualException.InnerException);
+        }
     }
 
     [Fact]
