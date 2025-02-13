@@ -47,9 +47,11 @@ public class ServiceAttributeTests {
         Assert.Equal(factory, actualService.ImplementationFactory);
     }
 
-    [Fact]
-    public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsNotValid() {
-        var serviceType = typeof(ServiceAttributeExample_InvalidFactoryMethod);
+    [Theory]
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodHasWrongSignature))]
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodMissing))]
+    [InlineData(typeof(ServiceAttributeExample_FactoryMethodNotStatic))]
+    public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType) {
         Assert.Throws<ArgumentException>(() => serviceType.GetServicesFromAttributes().ToList());
     }
 

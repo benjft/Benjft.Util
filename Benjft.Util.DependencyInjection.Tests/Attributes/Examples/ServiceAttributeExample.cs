@@ -24,9 +24,18 @@ public class ServiceAttributeExample_FactoryMethod {
 }
 
 [Service(FactoryMethod = nameof(Create))]
-public class ServiceAttributeExample_InvalidFactoryMethod {
+public class ServiceAttributeExample_FactoryMethodHasWrongSignature {
     [ExcludeFromCodeCoverage]
-    public static ServiceAttributeExample_InvalidFactoryMethod Create(string _) => new();
+    public static ServiceAttributeExample_FactoryMethodHasWrongSignature Create(string _) => new();
+}
+
+[Service(FactoryMethod = "Create")]
+public class ServiceAttributeExample_FactoryMethodMissing;
+
+[Service(FactoryMethod = nameof(Create))]
+public class ServiceAttributeExample_FactoryMethodNotStatic {
+    [ExcludeFromCodeCoverage]
+    public ServiceAttributeExample_FactoryMethodNotStatic Create(IServiceProvider _) => new();
 }
 
 [Service(ServiceKey = "Key1")]
