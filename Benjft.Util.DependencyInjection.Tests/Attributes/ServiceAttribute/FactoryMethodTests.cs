@@ -11,24 +11,24 @@ public class FactoryMethodTests {
     [Fact]
     public void ServiceAttribute_AddsService_WhenUsedOnClass() {
         var serviceType = typeof(ServiceFactoryAttributeExample);
-        var factoryMethod = GetFactoryMethod(serviceType, nameof(ServiceFactoryAttributeExample.Create));
 
         var services = serviceType.GetServicesFromAttributes();
         
         var actualService = Assert.Single(services);
         Assert.Equal(serviceType, actualService.ServiceType);
+        var factoryMethod = GetFactoryMethod(serviceType, nameof(ServiceFactoryAttributeExample.Create));
         Assert.Equal(factoryMethod, actualService.ImplementationFactory);
     }
     
     [Fact]
     public void ServiceAttribute_AddsService_WhenUsedOnAbstractClassIfFactoryMethodExists() {
         var serviceType = typeof(AbstractServiceFactoryAttributeExample);
-        var factoryMethod = GetFactoryMethod(serviceType, nameof(AbstractServiceFactoryAttributeExample.Create));
 
         var services = serviceType.GetServicesFromAttributes();
         
         var actualService = Assert.Single(services);
         Assert.Equal(serviceType, actualService.ServiceType);
+        var factoryMethod = GetFactoryMethod(serviceType, nameof(AbstractServiceFactoryAttributeExample.Create));
         Assert.Equal(factoryMethod, actualService.ImplementationFactory);
     }
     
@@ -38,12 +38,12 @@ public class FactoryMethodTests {
     [InlineData(ServiceLifetime.Transient)]
     public void ServiceAttribute_UsesDefaultLifetime_WhenNoLifetimeIsSet(ServiceLifetime defaultLifetime) {
         var serviceType = typeof(ServiceFactoryAttributeExample);
-        var factoryMethod = GetFactoryMethod(serviceType, nameof(ServiceFactoryAttributeExample.Create));
         
         var services = serviceType.GetServicesFromAttributes(defaultLifetime);
         
         var actualService = Assert.Single(services);
         Assert.Equal(actualService.Lifetime, defaultLifetime);
+        var factoryMethod = GetFactoryMethod(serviceType, nameof(ServiceFactoryAttributeExample.Create));
         Assert.Equal(factoryMethod, actualService.ImplementationFactory);
     }
     
@@ -58,9 +58,9 @@ public class FactoryMethodTests {
         
         var services = serviceType.GetServicesFromAttributes(defaultLifetime);
         
-        var factoryMethod = GetFactoryMethod(serviceType, "Create");
         var actualService = Assert.Single(services);
         Assert.Equal(actualService.Lifetime, expectedLifetime);
+        var factoryMethod = GetFactoryMethod(serviceType, "Create");
         Assert.Equal(factoryMethod, actualService.ImplementationFactory);
     }
 
