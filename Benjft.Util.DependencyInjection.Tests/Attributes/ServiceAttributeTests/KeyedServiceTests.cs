@@ -3,11 +3,11 @@ using Benjft.Util.DependencyInjection.Exceptions;
 using Benjft.Util.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Benjft.Util.DependencyInjection.Tests.Attributes;
+namespace Benjft.Util.DependencyInjection.Tests.Attributes.ServiceAttributeTests;
 
 public class KeyedServiceTests {
     [Fact]
-    public void KeyedServiceAttribute_CreatesKeyedServices_WhenUsedOnClass() {
+    public void ServiceAttribute_CreatesKeyedServices_WhenUsedOnClass() {
         var serviceType = typeof(KeyedServiceAttributeExample);
         
         var services = serviceType.GetServicesFromAttributes();
@@ -18,7 +18,7 @@ public class KeyedServiceTests {
     }
     
     [Fact]
-    public void KeyedServiceAttribute_ThrowsException_WhenUsedOnAbstractClass() {
+    public void ServiceAttribute_ThrowsException_WhenUsedOnAbstractClass() {
         var serviceType = typeof(AbstractKeyedServiceAttributeExample);
 
         Assert.Throws<InvalidServiceTypeException>(() => serviceType.GetServicesFromAttributes().ToList());
@@ -28,7 +28,7 @@ public class KeyedServiceTests {
     [InlineData(ServiceLifetime.Singleton)]
     [InlineData(ServiceLifetime.Scoped)]
     [InlineData(ServiceLifetime.Transient)]
-    public void KeyedServiceAttribute_UsesDefaultLifetime_WhenNoLifetimeIsSet(ServiceLifetime defaultLifetime) {
+    public void ServiceAttribute_UsesDefaultLifetime_WhenNoLifetimeIsSet(ServiceLifetime defaultLifetime) {
         var serviceType = typeof(KeyedServiceAttributeExample);
         
         var services = serviceType.GetServicesFromAttributes(defaultLifetime);
@@ -42,7 +42,7 @@ public class KeyedServiceTests {
     [InlineData(typeof(TransientKeyedServiceAttributeExample), ServiceLifetime.Transient)]
     [InlineData(typeof(ScopedKeyedServiceAttributeExample), ServiceLifetime.Scoped)]
     [InlineData(typeof(SingletonKeyedServiceAttributeExample), ServiceLifetime.Singleton)]
-    public void KeyedServiceAttribute_UsesLifetimeSetInTheAttribute_WhenLifetimeIsSet(
+    public void ServiceAttribute_UsesLifetimeSetInTheAttribute_WhenLifetimeIsSet(
         Type serviceType,
         ServiceLifetime expectedLifetime) {
         var defaultLifetime = expectedLifetime != ServiceLifetime.Singleton ? ServiceLifetime.Singleton : ServiceLifetime.Transient;
@@ -55,7 +55,7 @@ public class KeyedServiceTests {
     }
 
     [Fact]
-    public void KeyedServiceAttribute_CreatesMultipleKeyedServices_WhenMultipleKeysAreSet() {
+    public void ServiceAttribute_CreatesMultipleKeyedServices_WhenMultipleKeysAreSet() {
         var serviceType = typeof(KeyedServiceAttributeMultipleExample);
 
         var services = serviceType.GetServicesFromAttributes().ToArray();
@@ -67,7 +67,7 @@ public class KeyedServiceTests {
     }
 
     [Fact]
-    public void KeyedServiceAttribute_AddsServicesInOrder_WhenOrderIsSpecified() {
+    public void ServiceAttribute_AddsServicesInOrder_WhenOrderIsSpecified() {
         var serviceType = typeof(KeyedServiceAttributeMultipleOrderedExample);
 
         var services = serviceType.GetServicesFromAttributes().ToArray();

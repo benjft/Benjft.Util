@@ -4,7 +4,7 @@ using Benjft.Util.DependencyInjection.Exceptions;
 using Benjft.Util.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Benjft.Util.DependencyInjection.Tests.Attributes;
+namespace Benjft.Util.DependencyInjection.Tests.Attributes.ServiceAttributeTests;
 
 public class FactoryMethodTests {
     

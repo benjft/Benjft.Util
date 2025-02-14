@@ -4,12 +4,12 @@ using Benjft.Util.DependencyInjection.Exceptions;
 using Benjft.Util.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Benjft.Util.DependencyInjection.Tests.Attributes;
+namespace Benjft.Util.DependencyInjection.Tests.Attributes.ServiceAttributeTests;
 
 public class KeyedFactoryMethodTests {
     
     [Fact]
-    public void KeyedServiceAttribute_AddsService_WhenUsedOnClass() {
+    public void ServiceAttribute_AddsService_WhenUsedOnClass() {
         var serviceType = typeof(ServiceFactoryAttributeExample);
 
         var services = serviceType.GetServicesFromAttributes();
@@ -22,7 +22,7 @@ public class KeyedFactoryMethodTests {
     }
     
     [Fact]
-    public void KeyedServiceAttribute_AddsService_WhenUsedOnAbstractClassIfFactoryMethodExists() {
+    public void ServiceAttribute_AddsService_WhenUsedOnAbstractClassIfFactoryMethodExists() {
         var serviceType = typeof(AbstractServiceFactoryAttributeExample);
 
         var services = serviceType.GetServicesFromAttributes();
@@ -38,7 +38,7 @@ public class KeyedFactoryMethodTests {
     [InlineData(ServiceLifetime.Singleton)]
     [InlineData(ServiceLifetime.Scoped)]
     [InlineData(ServiceLifetime.Transient)]
-    public void KeyedServiceAttribute_UsesDefaultLifetime_WhenNoLifetimeIsSet(ServiceLifetime defaultLifetime) {
+    public void ServiceAttribute_UsesDefaultLifetime_WhenNoLifetimeIsSet(ServiceLifetime defaultLifetime) {
         var serviceType = typeof(ServiceFactoryAttributeExample);
         
         var services = serviceType.GetServicesFromAttributes(defaultLifetime);
@@ -54,7 +54,7 @@ public class KeyedFactoryMethodTests {
     [InlineData(typeof(TransientServiceFactoryAttributeExample), ServiceLifetime.Transient)]
     [InlineData(typeof(ScopedServiceFactoryAttributeExample), ServiceLifetime.Scoped)]
     [InlineData(typeof(SingletonServiceFactoryAttributeExample), ServiceLifetime.Singleton)]
-    public void KeyedServiceAttribute_UsesLifetimeSetInTheAttribute_WhenLifetimeIsSet(
+    public void ServiceAttribute_UsesLifetimeSetInTheAttribute_WhenLifetimeIsSet(
         Type serviceType,
         ServiceLifetime expectedLifetime) {
         var defaultLifetime = expectedLifetime != ServiceLifetime.Singleton ? ServiceLifetime.Singleton : ServiceLifetime.Transient;
@@ -81,7 +81,7 @@ public class KeyedFactoryMethodTests {
     [InlineData(typeof(ServiceFactoryAttributeExampleWrongReturnType),
                 typeof(InvalidServiceTypeException),
                 null)]
-    public void KeyedServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType, Type exceptionType, Type? innerExceptionType) {
+    public void ServiceAttribute_ShouldThrowAnException_WhenFactoryMethodIsInvalid(Type serviceType, Type exceptionType, Type? innerExceptionType) {
         var actualException = Assert.Throws(exceptionType, () => serviceType.GetServicesFromAttributes().ToList());
         
         if (innerExceptionType != null) {
@@ -90,7 +90,7 @@ public class KeyedFactoryMethodTests {
     }
 
     [Fact]
-    public void KeyedServiceAttribute_CreatesMultipleKeyedServices_WhenMultipleKeysAreSet() {
+    public void ServiceAttribute_CreatesMultipleKeyedServices_WhenMultipleKeysAreSet() {
         var serviceType = typeof(ServiceFactoryAttributeMultipleExample);
 
         var services = serviceType.GetServicesFromAttributes().ToArray();
@@ -105,7 +105,7 @@ public class KeyedFactoryMethodTests {
     }
 
     [Fact]
-    public void KeyedServiceAttribute_MayUseMultipleFactories_WhenMultipleKeysAreSet() {
+    public void ServiceAttribute_MayUseMultipleFactories_WhenMultipleKeysAreSet() {
         var serviceType = typeof(ServiceFactoryAttributeMultipleFactoriesExample);
 
         var services = serviceType.GetServicesFromAttributes().ToArray();
@@ -121,7 +121,7 @@ public class KeyedFactoryMethodTests {
     }
 
     [Fact]
-    public void KeyedServiceAttribute_AddsServicesInOrder_WhenOrderIsSpecified() {
+    public void ServiceAttribute_AddsServicesInOrder_WhenOrderIsSpecified() {
         var serviceType = typeof(ServiceFactoryAttributeMultipleOrderedExample);
 
         var services = serviceType.GetServicesFromAttributes().ToArray();
