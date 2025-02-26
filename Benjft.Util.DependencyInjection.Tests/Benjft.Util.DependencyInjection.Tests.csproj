@@ -25,4 +25,8 @@
       <ProjectReference Include="..\Benjft.Util.DependencyInjection\Benjft.Util.DependencyInjection.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Attributes\" />
+    </ItemGroup>
+
 </Project>
