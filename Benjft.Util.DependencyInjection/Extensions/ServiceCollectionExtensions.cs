@@ -6,14 +6,30 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Benjft.Util.DependencyInjection.Extensions;
 
-public static class ServiceCollectionExtensions {
+    /// <summary>
+    /// Extension methods for adding services to the <see cref="IServiceCollection"/> from attributes.
+    /// </summary>
+    public static class ServiceCollectionExtensions {
     private static Assembly ThisAssembly => typeof(ServiceCollectionExtensions).Assembly;
-    
+
+    /// <summary>
+    /// Adds services to the service collection from attributes in all assemblies that reference this assembly.
+    /// </summary>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <param name="defaultLifetime">The default lifetime to use for services that don't specify one.</param>
+    /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddServicesFromAttributes(this IServiceCollection services, ServiceLifetime defaultLifetime = ServiceLifetime.Transient) {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetReferencedAssemblies().Contains(ThisAssembly.GetName()));
         return AddServicesFromAttributes(services, assemblies, defaultLifetime);
     }
 
+            /// <summary>
+            /// Adds services to the service collection from attributes in the specified assembly.
+            /// </summary>
+            /// <param name="services">The service collection to add services to.</param>
+            /// <param name="assembly">The assembly to scan for attributes.</param>
+            /// <param name="defaultLifetime">The default lifetime to use for services that don't specify one.</param>
+            /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddServicesFromAttributes(
         this IServiceCollection services,
         Assembly assembly,
@@ -21,6 +37,13 @@ public static class ServiceCollectionExtensions {
         return AddServicesFromAttributes(services, [assembly], defaultLifetime);
     }
 
+            /// <summary>
+            /// Adds services to the service collection from attributes in the specified assemblies.
+            /// </summary>
+            /// <param name="services">The service collection to add services to.</param>
+            /// <param name="assemblies">The assemblies to scan for attributes.</param>
+            /// <param name="defaultLifetime">The default lifetime to use for services that don't specify one.</param>
+            /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddServicesFromAttributes(
         this IServiceCollection services,
         IEnumerable<Assembly> assemblies,
@@ -36,6 +59,12 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
+            /// <summary>
+            /// Gets service descriptors from attributes on the specified types.
+            /// </summary>
+            /// <param name="types">The types to check for service attributes.</param>
+            /// <param name="defaultLifetime">The default lifetime to use for services that don't specify one.</param>
+            /// <returns>A collection of service descriptors created from the attributes.</returns>
     public static IEnumerable<ServiceDescriptor> GetServicesFromAttributes(
         this IEnumerable<Type> types,
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient) {
@@ -45,6 +74,12 @@ public static class ServiceCollectionExtensions {
                select serviceDescriptorWrapper.ServiceDescriptor;
     }
 
+            /// <summary>
+            /// Gets service descriptors from attributes on the specified type.
+            /// </summary>
+            /// <param name="type">The type to check for service attributes.</param>
+            /// <param name="defaultLifetime">The default lifetime to use for services that don't specify one.</param>
+            /// <returns>A collection of service descriptors created from the attributes.</returns>
     public static IEnumerable<ServiceDescriptor> GetServicesFromAttributes(
         this Type type,
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient) {
