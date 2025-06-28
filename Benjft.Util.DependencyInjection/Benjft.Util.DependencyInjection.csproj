@@ -22,7 +22,7 @@
 
         <!-- GitHub Packages specific metadata -->
         <!-- Required: match the package namespace with repository owner and repository name -->
-        <PackageId>benjft.Benjft.Util.DependencyInjection</PackageId>
+        <PackageId>Benjft.Util.DependencyInjection</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
