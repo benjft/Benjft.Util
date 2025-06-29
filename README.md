@@ -1,5 +1,10 @@
 ﻿# Benjft.Util.DependencyInjection
 
+![GitHub Tag](https://img.shields.io/github/v/tag/Benjft/Benjft.Util?sort=semver&label=Build)
+![GitHub License](https://img.shields.io/github/license/Benjft/Benjft.Util)
+
+
+
 A .NET library that simplifies dependency injection registration through attributes. This library allows you to register services with the Microsoft Dependency Injection container using simple attribute declarations on your classes, eliminating the need for manual registration code.
 
 ## Installation

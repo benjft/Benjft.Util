@@ -1,0 +1,60 @@
+<#@ template hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ import namespace="System.Linq" #>
+using Benjft.Util.DependencyInjection.Attributes;
+
+namespace Benjft.Util.DependencyInjection.Tests.Attributes;
+
+public enum ServiceKeyEnum { A, B, C }
+<#
+    const string Singleton = "Singleton";
+    const string Scoped = "Scoped";
+    const string Transient = "Transient";
+
+    const string Valid = "Valid";
+    const string Invalid = "Invalid";
+
+    const string IntKey = "Int";
+    const string StringKey = "String";
+    const string EnumKey = "Enum";
+
+    string[] lifetimeValues = [null, Singleton, Scoped, Transient];
+    string[] factoryMethodOptions = [null, Valid, Invalid];
+    string[] serviceKeySettings = [null, IntKey, StringKey, EnumKey];
+
+    foreach (var lifetimeValue in lifetimeValues)
+        foreach (var factoryMethodOption in factoryMethodOptions)
+            foreach (var serviceKeySetting in serviceKeySettings) {
+                var className =
+                    $"ServiceAttributeTest_{lifetimeValue ?? "DefaultLifetime"}_{factoryMethodOption ?? "No"}Factory_{serviceKeySetting
+                        ?? "No"}Key";
+                var classAttribute = $"{lifetimeValue ?? ""}Service";
+                string[] attributeParameters =
+                    [factoryMethodOption != null ? "FactoryMethod = nameof(Create)" : null,
+                        serviceKeySetting != null
+                            ? $"ServiceKey = {serviceKeySetting switch {
+                                EnumKey => "ServiceKeyEnum.A",
+                                StringKey => "\"serviceKey\"",
+                                IntKey => 1,
+                                _ => throw new NotImplementedException(),
+                                }}"
+                            : null];
+#>
+[<#= classAttribute #>(<#= string.Join(", ", attributeParameters.Where(x => x != null).ToArray()) #>)]
+public class <#= className #> { 
+<#
+                if (factoryMethodOption == Valid) {
+#>
+    public <#= className #> Create(IServiceProvider serviceProvider<#= serviceKeySetting != null ? ", object? key" : "" #>) => new();
+<#
+                } else if (factoryMethodOption == Invalid) {
+#>
+    public <#= className #> Create(IServiceProvider serviceProvider<#= serviceKeySetting != null ? ", object? key" : "" #>, object invalidExtraParameter) => new();
+<#
+                }
+#>
+}
+
+<#
+            }
+#>
